@@ -1,0 +1,133 @@
+<script type="text/javascript">
+   iniciar_chat('{{user.username}}','{{datosUsuario.userContacto}}');   
+</script>
+<style media="screen">
+#cont_mensajes{
+  height:25em;
+  background-color:#b8c6ac;
+  /* colores b8c6ac 7a8471 */
+  text-align: left;
+  line-height: 10px;
+  padding: 2px;
+}
+.imgRedonda {
+    width:60px;
+    height:60px;
+    border-radius:30px;
+}
+.mensajeEmisor {
+  clear:both;
+  padding:10px;
+  background-color:#e6f6d8; 
+  width:auto; 
+  margin:1px; 
+  margin-bottom:5px;
+  display:inline-block;
+  line-height:20px;
+  /*border-radius: 10px;*/
+  float:right; 
+  margin-left:20px;
+  border-right: 5px solid #1C6EA4;
+  border-radius: 10px 0px 20px 10px;   
+}
+
+.mensajeReceptor {
+  clear:both;
+  padding:10px; 
+  background-color:white; 
+  width:auto; 
+  margin:1px;
+  margin-bottom:5px;
+  display:inline-block; 
+  line-height:20px;
+  /*border-radius: 10px;*/
+  float:left; 
+  margin-right:20px;
+  border-left: 5px solid #1C6EA4;
+  border-radius: 0px 10px 10px 20px;
+}
+
+</style>
+<div class="container p-4" style="padding: 0.25rem!important">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card text-center">
+                <div class="card-body" style="padding:0.25rem">
+                    <!-- <h3>Bienvenido {{user.fullname}}</h3> -->
+                    <!-- colores 606b56 5a6253 -->
+                    <div style="margin:auto; overflow:hidden; background-color:#5a6253; padding:2px; color:white;">
+                      <div style="float:left;"><img src='/img/{{datosUsuario.userImage}}' class='imgRedonda' /></div>
+                      <div style="margin-left:10px; margin-top:15px; float:left;">
+                          <h5 style="text-align:left;">{{datosUsuario.userFullname}}</h5>
+                          <!-- <p style="text-align:left;">Usuario: {{user.username}}</p>   -->
+                      </div>
+                    </div>
+                                      
+                    <!-- <h3 style="clear:both;">CHAT</h3> -->
+                    
+                    <div class="" id="cont_mensajes" style="clear:both; overflow:auto;">
+                      <!-- colores :#d2e1c5 -->
+                      <!--<p class="mensajeReceptor" style="">Hola papa como estas Hola papa como estas Hola papa como estas Hola papa como estas Hola papa como estas</p>
+                      <p class="mensajeEmisor" style="">Hola hijo mio Hola hijo mio Hola hijo mio Hola hijo mio Hola hijo mio Hola hijo mio Hola hijo mio</p>
+                      -->
+                    </div>
+
+                    <input type="hidden" id="usuario" name="usuario" value="{{user.username}}"></input>
+                    <div class="" id="div_enviar_mensaje" style="width:100%; margin-top:5px;">
+                      <textarea class="" id="mensaje" placeholder="mensaje" style="width:100%;"></textarea>
+                    </div>
+                    <div class="" id="div_receptor" style="margin-top:5px; float:left;">
+                      <input type="hidden" id="receptor" placeholder="receptor" name="" value="{{datosUsuario.userContacto}}">
+                    </div>
+                    <div class="" style="clear:both; float:left; margin-top:0em; padding:0px;">
+                      <a href="javascript:pedirLlaves()" class="btn btn-primary " id="btn_enviar_mensaje">
+                          Pedir llave pública
+                      </a>
+                      <a href="javascript:enviar_mens()" class="btn btn-primary " id="btn_enviar_mensaje">
+                          ENVIAR
+                      </a>
+                    </div>                    
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+
+function enviar_mens(){
+  mensaje = $('#mensaje').val();
+  receptor = $('#receptor').val();
+  emisor = "{{user.username}}";
+
+  //console.log('En el cliente: '+ " mensaje: " + mensaje + " receptor: " + receptor);
+  if (receptor != ''){
+    enviar_mensajev1(emisor, mensaje, receptor);
+
+  } else{
+    enviar_mensajev1(emisor, mensaje);
+  }
+
+}
+
+
+function pedirLlaves(){
+  mensaje = $('#mensaje').val();
+  receptor = $('#receptor').val();
+  emisor = "{{user.username}}";
+
+  //console.log('En el cliente: '+ " mensaje: " + mensaje + " receptor: " + receptor);
+  if (receptor != ''){
+
+    pedirLlavePub(receptor);
+  } else{
+    
+  }
+
+}
+
+
+
+</script>

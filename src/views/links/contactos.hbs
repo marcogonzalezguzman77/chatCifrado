@@ -1,0 +1,147 @@
+<style media="screen">
+
+#cont_contactos{
+  background: white;
+  text-align: left;
+  padding:5px;
+  /*margin:5px;*/
+  border: solid 2px black;
+}
+
+.contacto{
+  border: solid 0.5px black;
+  padding:5px;
+  height:50px;
+  cursor: pointer;
+  
+}
+
+.contacto:hover{
+  background: #5b6533;
+  color:honeydew;
+}
+
+.contacto>span{
+  vertical-align: middle;
+}
+
+.contactoHref{
+  display:block; 
+  text-decoration: none;
+  color: black;
+  border: solid 0.5px black;
+  padding:5px;
+  height:50px;
+  cursor: pointer;
+  
+}
+
+.contactoHref:hover{
+  display:block;
+  text-decoration: none;
+  background: #5b6533;
+  color:honeydew;
+}
+
+.contactoHref>span{
+  vertical-align: middle;
+}
+
+.imgRedonda {
+    width:40px;
+    height:40px;
+    border-radius:20px;
+}
+
+</style>
+
+<script>
+iniciarSesionServidor('{{user.username}}');
+</script>
+
+<!-- EN EL SIGUIENTE DIV COLOCO LOS CONTACTOS DEL USUARIO -->
+<div class="container p-4" id="contenedorContactos">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h3>Bienvenido {{user.fullname}}</h3>
+                    <!-- <h4>{{user.username}}</h4> -->
+                   
+                    <h3>CONTACTOS</h3>
+                    <div id="cont_contactos" style="width:100%; border-style: solid; ">
+                        {{#each contactos}}
+                          <!-- El siguiente hiperlink muestra los contactos y manda a llamar el chat del contacto -->
+                          <!-- con la plantilla chat.hbs -->
+                          <!-- con la funcion abrirChat() abro un ajax request que manda a llamar
+                          un url que ejecuta la plantilla en links.js router.get('/chat/:userContacto/:userFullname/:userImage/:userUsuario')
+                          cuya respuesta envia el codigo html que se incrustara en el div contenedorChat -->
+
+
+                          <!--<a class="contactoHref" href="/links/chat/{{fk_user_contacto}}/{{fullname}}/{{nombreImagen}}"><img src='/img/{{nombreImagen}}' class='imgRedonda' /><span style="margin-left:10px;">{{fullname}}</span></a>-->
+                          <a class="contactoHref" href="javascript:abrirChat('{{fk_user_contacto}}','{{fullname}}','{{nombreImagen}}','{{../user.username}}')" onclick="abrirChat('{{fk_user_contacto}}','{{fullname}}','{{nombreImagen}}','{{../user.username}}')"><img src='/img/{{nombreImagen}}' class='imgRedonda' /><span style="margin-left:10px;">{{fullname}}</span><span style="margin-left:5px; font-size:x-small;" id="situacionConexion_{{fk_user_contacto}}"></span><span id="llavePubSesion_{{fk_user_contacto}}" style="margin-left:5px; font-size:x-small;"></span><span id="llavePubIdentidad_{{fk_user_contacto}}" style="margin-left:5px; font-size:x-small;"></span><span id="secretoCompartido_{{fk_user_contacto}}" style="margin-left:5px; font-size:x-small;"></span><span id="llaveRatchDH0_{{fk_user_contacto}}" style="margin-left:5px; font-size:x-small;"></span></a>
+
+                          <!--
+                          <a class="contactoHref" href="javascript:void(0)" onClick="javascript:alertaFuncionSockets(); return false;"><img src='/img/{{nombreImagen}}' class='imgRedonda' /><span style="margin-left:10px;">{{fullname}}</span></a>
+                          <div class="contactoHref" onClick="javascript:alertaFuncionSockets()"><img src='/img/{{nombreImagen}}' class='imgRedonda' /><span style="margin-left:10px;">{{fullname}}</span></div>
+                          <button type="submit" onclick="javascript:alertaFuncionSockets()">Login</button>-->
+
+                        {{else}}
+                            <div class="col-md-4 mx-auto">
+                                <div class="card card-body text-center">
+                                    <p>No existen contactos</p>
+                                    <a href="/links/agregarContactos">¡Agrega un contacto!</a>
+                                </div>
+                            </div>
+                        {{/each}}
+
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- EN EL SIGUIENTE DIV COLOCO LOS CHAT DE CADA CONTACTO -->
+<div class="container p-4" id="contenedorChat">
+
+</div>
+
+<script>
+
+function enviar_mens(){
+  mensaje = $('#mensaje').val();
+  receptor = $('#receptor').val();
+  emisor = "{{user.username}}";
+
+  //console.log('En el cliente: '+ " mensaje: " + mensaje + " receptor: " + receptor);
+  if (receptor != ''){
+    enviar_mensajev1(emisor, mensaje, receptor);
+
+  } else{
+    enviar_mensajev1(emisor, mensaje);
+  }
+
+}
+
+
+function pedirLlaves(){
+  mensaje = $('#mensaje').val();
+  receptor = $('#receptor').val();
+  emisor = "{{user.username}}";
+
+  //console.log('En el cliente: '+ " mensaje: " + mensaje + " receptor: " + receptor);
+  if (receptor != ''){
+
+    pedirLlavePub(receptor);
+  } else{
+    
+  }
+
+}
+
+
+
+</script>
