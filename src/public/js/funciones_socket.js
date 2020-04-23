@@ -146,20 +146,8 @@ function iniciarSesionServidor(usuario){
         console.log('Llave Ratchet 0 privada ', valoresLlavesRatchet.rat_a, ' con userContacto ', userContacto);
         console.log('Llave Ratchet 0 publica ', valoresLlavesRatchet.RAT_A, ' con userContacto ', userContacto);
         
+        iniciar_chat(usuario,userContacto);
         
-
-
-
-
-
-
-        // el siguiente codigo que tengo comentado lo emplee para hacer una sesion mediante socket
-        //lo deje en standby para despues
-        //solicito una sesion cifrada con los contactos Y REMITO EL MENSAJE CIFRADO, LAS LLAVES, USUARIO Y CONTACTO
-       /* socket.emit('solicitudHaciaServidorSesionCifradaUsuario-Contacto', {mensajeADcifrado: mensajeADcifrado, llavePublicaIdentidadUsuario: llavePublicaIdentidadUsuario, llaveEfimeraPublicaSesion: A, userUsuario: usuario, userContacto: element.fk_user_contacto}, function(respuestaCallback){
-         
-        });//fin emit*/
-
       }//fin del for
      
       
@@ -206,6 +194,7 @@ function iniciarSesionServidor(usuario){
       console.log('Llave Ratchet 0 privada ', valoresLlavesRatchet.rat_a, ' con usuarioConectado ',usuarioConectado);
       console.log('Llave Ratchet 0 publica ', valoresLlavesRatchet.RAT_A, ' con usuarioConectado ',usuarioConectado);
       
+      iniciar_chat(usuarioRecibeAviso,usuarioConectado);
 
 
     });
@@ -245,67 +234,9 @@ function iniciarSesionServidor(usuario){
 
 
 
-
-        //Estoy a la escucha de solicitudes de sesiones cifradas por parte de otros usuarios socket.on('solicitudHaciaContactos.....')
-    //hago mis calculos del secreto compartido descifro el mensaje corroboro que este correcto y envio respuesta al usuario que solicito la sesion cifrada
-    //envio respuesta de solicitud socket.emit('respuestaSolicitudSesionCifrada....')
- /*   socket.on('solicitudHaciaContactoSesionCifradaUsuario-Contacto', function(datos){
-      usuario = datos.userUsuario; //el que solicita la sescion
-      contacto = datos.userContacto; //soy yo este usuario
-      mensajeADcifrado = datos.mensajeADcifrado;
-      llavePublicaIdentidadUsuario = datos.llavePublicaIdentidadUsuario;
-      llaveEfimeraPublicaSesion = datos.llaveEfimeraPublicaSesion;
-
-      //Calculo el secreto compartido, descifro el mensaje y comparo el resultado con la cadena "usuario+contacto"
-      //y si coinciden los resultados, se establece la sesion y envio la respuesta ok
-      //debo desplegar el secreto compartido en la ventana de contactos y en su momento grabarlo en la base de datos del dispositivo
-
-      //CALCULO LOS SECRECTOS COMPARTIDOS SK
-        //SK=DH1(I'B, IA)||DH2(E'B, EA)    I es llave de identeidad E es llave efimera(sesion), A usuario y B contacto, ' es llave privada sin ' es llave publica
-        //recuerda funcion siguiente el orden es llavePrivada, llavePublica
-        DH1 = generarSecretoCompartido(buscarLlavePrivadaIdentidadUsuario(contacto),llavePublicaIdentidadUsuario);
-        DH2 = generarSecretoCompartido(a,llaveEfimeraPublicaSesion);
-
-        SK = (DH1+DH2)%11;
-        mensajeADdescifrado = descifradoSustitucion(mensajeADcifrado,SK);
-
-        mensajeAD= usuario+contacto;
-
-        //OJO AQUI ES DEL LADO AL QUE LE ESTAN SOLICITANDO Y EN socket.on('respuestaSolicitudSesionCifradaUsuarioHaciaContacto')
-        //es del LADO DE SOLICITANTE
-        //si son iguales envio la respuesta y pongo en la informacion de mis conctacos el secreto compartido y envio la respuesta
-        //al solicitante
-        if (mensajeAD==mensajeADdescifrado){
-          //usuario es el que solicita la sesion
-          document.getElementById('secretoCompartido_'+usuario).innerHTML= SK;
-          respuesta="ok" //para enviar la respuesta
-        }else{
-          respuesta="no"
-        }
-        //respuesta= mensajeADdescifrado+mensajeAD;
-
-      console.log("Cliente: Recibi solicitud sesion cifrada de ", datos.userUsuario);
-      
-      socket.emit('respuestaSolicitudSesionCifradaUsuarioHaciaServidor', {userUsuario: usuario, userContacto: contacto, respuesta: respuesta});
-
-    });
-
-    //LADO DEL SOLICITANTE
-    socket.on('respuestaSolicitudSesionCifradaUsuarioHaciaContacto', function(datos){
-      //console.log("Reespuesta de mi solicitud de sesion Cifrada con el contacto ",datos.contacto, " es ", datos.respuesta);
-      if (datos.respuesta=="ok"){
-        console.log("Sesion cifrada establecida con el usuario ", datos.contacto);
-        document.getElementById('secretoCompartido_'+datos.contacto).innerHTML= SK[datos.contacto];
-      }
-
-    });
-*/
-
-
-
-
 }//fin funcion iniciarSesion() 
 
+//ESAT FUNCION YA NO LA ESTOY OCUPANDO, ESTOY OCUPANDO LA VERSION 2
 //abro el chat cuando doy click sobre un contacto en la ventana CONTACTOS contactos.hbs
 //dentro de esta funcion ajax esta la funcion inciar_chat() que es la que contiene socket.on('enviar_mensajes')
 //citado socket esta a la escucha de mensajes de otros usuarios
@@ -346,15 +277,33 @@ function mostrarRespuestaAbrirChat(usuario,contacto) {
   }
 }
 
+//ESTA FUNCION ES LA QUE ESTOY OCUPANDO
+function abrirChatv2(userContacto,fullnameContacto,nombreImagenContacto,userUsuario){
+  document.getElementById('div_chat_'+userUsuario+'_'+userContacto).style.display = "block";
+  document.getElementById('contenedorContactos').style.display = "none";
+  iniciar_chat(userUsuario,userContacto);
+}
+
+function abrirContenedorContactosv2(userUsuario,userContacto){
+  document.getElementById('contenedorContactos').style.display = "block";
+  document.getElementById('div_chat_'+userUsuario+'_'+userContacto).style.display = "none";
+}
+
+function abrirContenedorContactos(){
+  document.getElementById('contenedorContactos').style.display = "block";
+  document.getElementById('contenedorChat').innerHTML = "";
+  document.getElementById('contenedorChat').style.display = "none";
+}
+
 
 
 
 //SE INICIA EL CHAT DENTRO DE LA VENTANA DE contactos.hbs, ALLI ES DONDE COLOCO LA FUNCION inciar_chat() dentro de cada contacto
-//la variable contacto no la ocupo la debo quitar despuse
-//OJO: en esta funcion se activa el socket.on('enviar_mensaje'), empleado para estar a la escucha para recibir mensajes
-//recuerda que cuando un usuario envia mensajes envia mensajes al contacto final y a el mismo asi que se emplea dos veses el emit('enviar_mensaje')
-//y el on('enviar_mensaje')
+
+//OJO: en esta funcion se activa el socket.on('enviar_mensaje') del lado del CLIENTE(navegador), empleado para estar a la escucha para recibir mensajes
+
 function iniciar_chat(usuario, contacto){
+    console.log('se llamo iniciar_chat(usuario,contacto)'+usuario+' '+contacto);
     let n=0; //empleada para contabilizar mensajesSesion para poder observar cual fue el mensaje anterior y quien fue el emisor
     
     //la siguiente bandera es porque solo puedo generar un solo socket.on('enviar_mensaje'), solo una escucha
@@ -362,7 +311,7 @@ function iniciar_chat(usuario, contacto){
     //lo que hacia que se duplicaran o triplicarn los mensajes
     
     banderaIniciaChatSocketEnviarMensaje = banderaIniciaChatSocketEnviarMensaje + 1;
-
+    //console.log('banderaIniciaChatSocektEnviarMensaje '+banderaIniciaChatSocketEnviarMensaje);
     //las dos variables siguientes son globales porque se actualizan en el socket.on('enviar_mensaje'), que
     //solo se ejecuta una vez debido a la bandera y no puede emplear los parametros directos usuario,contacto de la funcion iniciar_chat()
     contactoEnviar=contacto;
@@ -370,12 +319,12 @@ function iniciar_chat(usuario, contacto){
 
     //estoy a la escucha de nuevos mensajes que el servidor envia de otros usuarios
     //enviar_mensaje recibe los mensajes del servidor y los despliega dentro de la ventana del chat
-    //recuerda que cuando usuario envia un mensaje lo envia dos veces (el usuario envia el mensaje a si mismo y envia el mensaje para sus contacto)
+    //***esto ya no sucede ya lo corregi ****recuerda que cuando usuario envia un mensaje lo envia dos veces (el usuario envia el mensaje a si mismo y envia el mensaje para sus contacto)
     
     if (banderaIniciaChatSocketEnviarMensaje==1){
           socket.on('enviar_mensaje', function(datos){
-            
-         
+           
+            //***********HICE UNAS OPERACIONES PARA CALCULAR LOS Nos. DE MENSAJES LOS QUE NO HE UTILIZADO HASTA EL MOMENTO, EMPIEZA AQUI */
             //contador mensajes enviados por el receptor (mensajes recibidos)
             //yo soy el receptor
             if( isNaN(contadorMensajesEnviadosSesion[datos.receptor])||(contadorMensajesEnviadosSesion[datos.receptor]==0)){
@@ -410,7 +359,15 @@ function iniciar_chat(usuario, contacto){
             
             //grabo los mensajes de sesion para saber quien es el ultimo que envio mensajes         
             mensajesSesionActual.push({receptor: datos.receptor, emisor: datos.emisor, mensaje: datos.mensaje});
+            
+            /**********TERMINA AQUI LOS CONTADORES DE MENSAJES QUE HASTA EL MOMENTO NO HE UTILIZADO */
 
+
+
+           
+            //*********  AQUI EMPIEZA LA PARTE PRINCIPAL DE socket.on('enviar_mensaje') ***********
+
+            //console.log('bandera 1 entro a socket.on(enviar_mensaje)');
             
             //esta clase es para que el mensaje se coloque del lado derecho o de lado izquierdo 
             //dependiendo de quien es el que envia el mensaje (emisor-receptor);
@@ -420,12 +377,15 @@ function iniciar_chat(usuario, contacto){
             //ahora lo hago en mi misma ventana cliente          
             if(usuarioEnvia==datos.emisor){    //si recibe es quien envia los mensajes que me llegan a mi mismo de mi mismo         
               clase="mensajeEmisor";
-              
-              //ya no lo ocupo             
+              //console.log('bandera 2 entro a socket.on(enviar_mensaje)');
+
+              //ya no lo ocupo, antes me lo enviaba a mi mismo el mensaje via socket, ahora lo hago de forma directa sin sockets         
 
             }else{ //ESTE ELSE ES EMPLEADO PARA CUANDO NO LLEGAN MENSAJES A SI MISMO, CUANDO LLEGAN LOS MENSAJES A TODOS LOS DEMAS USUARIOS
               clase="mensajeReceptor";
-             
+              
+              //console.log('bandera 3 entro a socket.on(enviar_mensaje)');
+
                //el contador contadorMensajesSesion[datos.receptor, datos.emisor] es para llevar control de los mensajes de sesion entre usuario y contacto               
                //si el contadoor es nulo o igual a cero, hacerlo 0 y sumarle uno
               if( isNaN(contadorMensajesSesion[datos.receptor, datos.emisor])||(contadorMensajesSesion[datos.receptor, datos.emisor]==0)) {
@@ -444,7 +404,7 @@ function iniciar_chat(usuario, contacto){
                 //empleo el secreto compartido inicial
                 secretoCompartido = document.getElementById('secretoCompartido_'+contactoEnviar).innerHTML;
                 secretoCompartido = parseInt(secretoCompartido); 
-                console.log("secreto compartio: ",secretoCompartido);
+                console.log("secreto compartio: ",secretoCompartido + ' mensaje '+datos.mensaje);
                 mensaje_claro = descifradoSustitucion(datos.mensaje,secretoCompartido);
 
               }else{//para el segundo mensaje en adelante entre emisor y receptor
@@ -589,27 +549,30 @@ function iniciar_chat(usuario, contacto){
             //el parametro contactoEnviar se actualiza cada vez que se da click en iniciar_chat(usuario,contacto) y se asigna
             // la variable contacto a la variable contactoEnviar
 
-
-            //AQUI ES DONDE ENVIO LOS MENSAJES DENTRO DEL CUADRO DE MENSAJE CON id="cont_mensajes"            
-            $('#cont_mensajes').append('<p class="' + clase + '">' + mensaje_claro +'</p>');
+            console.log("secreto compartio: ",secretoCompartido+' mensaje claro '+mensaje_claro+' contactoEnviar '+contactoEnviar+' usuarioEnvia '+usuarioEnvia);
+            //AQUI ES DONDE ESCRIBO LOS MENSAJES QUE RECIBO LOS MENSAJES DENTRO DEL CUADRO DE MENSAJE CON id="cont_mensajes"            
+            $('#cont_mensajes_'+usuarioEnvia +'_'+contactoEnviar).append('<p class="' + clase + '">' + mensaje_claro +'</p>');
             //alturaDiv = $('#cont_mensajes').height();
             //el scrollTop es para que mueva el scroll hasta abajo cuando se envia el mensaje
-            $('#cont_mensajes').scrollTop(9999999);
-            document.getElementById('mensaje').value = "";
+            $('#cont_mensajes_'+usuarioEnvia +'_'+contactoEnviar).scrollTop(9999999);
+            //document.getElementById('mensaje_'+contactoEnviar+'_'+usuarioEnvia).value = "";
             
           }); //fin socket.on('enviar_mensaje')
       }//fin if bandera para solo tener a la escucha un solo socket.on('enviar_mensaje')
-  
+      
+     // contactoEnviar=contacto;
+     // usuarioEnvia=usuario;
 
 }//fin funcion iniciar chat
 
 
 //funcion del boton enviar mensaje version 1
 function enviar_mensajev1(emisor, mensaje, receptor = null){
+  console.log('entre a enviar mensajev1');
   //me envio el mensaje a mi mismo, las siguientes tres lineas es par realizar esa accion
-  $('#cont_mensajes').append('<p class="mensajeEmisor">' + mensaje +'</p>');
-  $('#cont_mensajes').scrollTop(9999999);
-  document.getElementById('mensaje').value = "";
+  $('#cont_mensajes_'+emisor+'_'+receptor).append('<p class="mensajeEmisor">' + mensaje +'</p>');
+  $('#cont_mensajes_'+emisor+'_'+receptor).scrollTop(9999999);
+  document.getElementById('mensaje_'+emisor+'_'+receptor).value = "";
   //almaceno los mensajes en memoria volatil en el siguiente array
   mensajesSesionActual.push({receptor: receptor, emisor: emisor, mensaje: mensaje});
 
@@ -740,7 +703,27 @@ function enviar_mensajev1(emisor, mensaje, receptor = null){
 
   }//fin del else cuando el contador no es 0 osea que ya hay una sesion establecida y hay mas de un mensaje
 
-}//fin de la funcion
+}//fin de la funcion enviar_mensajev1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //funcion que utilizo para pedir la llave publica del receptor
 function pedirLlavePub(receptor){  
@@ -814,10 +797,5 @@ function enviar_mensaje(emisor,mensaje,receptor=null){
 
 }//fin funcion enviar_mensaje();
 
-function abrirContenedorContactos(){
-  document.getElementById('contenedorContactos').style.display = "block";
-  document.getElementById('contenedorChat').innerHTML = "";
-  document.getElementById('contenedorChat').style.display = "none";
-}
 
 

@@ -71,18 +71,18 @@ body {
 }
 
 /*para cambiar el tamaño del area del mensaje txtarea id=mensaje*/
-#mensaje{
+.mensaje{
   width: 92%;
 }
 
 @media screen and (max-width: 880px) {
-  #mensaje{
+  .mensaje{
     width: 90%;
   } 
 }
 
 @media screen and (max-width: 580px) {
-  #mensaje{
+  .mensaje{
     width: 85%;
   } 
 }

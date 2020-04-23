@@ -51,6 +51,8 @@ app.use(passport.session());
 
 //Variables globales
 //se definen que variables pueden ser accedidas desde nuestra APLICACION
+//podria poner una variable cuando quiera almacenar el nombre de mi aplicacion
+
 app.use((req, res, next) => {
   app.locals.success = req.flash('success');
   app.locals.message = req.flash('message');
@@ -63,9 +65,14 @@ app.use((req, res, next) => {
 
 
 //Rutas (urls de nuestro servidor)
+//que se va a hacer cuando un usuario entre a la URL
+//********ESTAS SON LAS RUTAS A LAS QUE INGRESA POR PRIMERA VEZ LA PAGINA CUANDO******/
+//cuando el usuario entra a http://localhost:4000
+//dentro de la carpeta routes estan las rutas donde se direcciona hacia las plantillas que se va accesar dependiedo de la ruta del URL
+//por ejemplo http://localhost:/  entra index.hbs porque en index.js esta direccionado con el comando res.render('index.hbs');
 app.use(require('./routes/index.js'));  //dentro de index.js .get('/') estoy renderizando index.hbs 'Lets get started', pagina inicial
 app.use(require('./routes/authentication.js')); //.get('/signin')
-app.use('/links',require('./routes/links.js')); //.get--> chat, add, edit, delete, CUANDO EN EL URL ES localhost:4000/links/add   localhost:4000/links/chat
+app.use('/links',require('./routes/links.js')); //.get--> chat, add, edit, delete, CUANDO EN EL URL ES localhost:4000/links/add , localhost:4000/links/chat
 
 //Public (codigo al cual el navegador de los clientes pueden acceder), archivos estaticos, static files
 direccionImagenesUsuarios = 'views\\links\\imagenes';
